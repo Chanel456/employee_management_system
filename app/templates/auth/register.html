@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form method="POST">
+    <h3 align="center"> Register </h3>
+    <div class="form-group required">
+        <label>User Type</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="admin" name=userType value="admin">
+        <label class="form-control-label" for="admin">Admin</label>
+    </div>
+    <div class="form-check form-check-inline">
+        <input type="radio" class="form-check-input" id="regular" name="userType" value="regular">
+        <label class="form-control-label" for="regular">Regular</label>
+    </div>
+    <div class="form-group required">
+        <label class="form-control-label required" for="email">Email Address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+    </div>
+    <div class="form-group required">
+        <label class="form-control-label required" for="firstName">First Name</label>
+        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name">
+    </div>
+    <div class="form-group required">
+        <label class="form-control-label required" for="password1">Password</label>
+        <input type="password" class="form-control" id="password1" name="password1" placeholder="Enter password">
+    </div>
+    <div class="form-group required">
+        <label class="form-control-label required" for="password2">Confirm Password</label>
+        <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm password">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}
