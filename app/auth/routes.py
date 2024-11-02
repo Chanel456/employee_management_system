@@ -13,9 +13,9 @@ def login():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-
+        # create function which filters user by email
         user = User.query.filter_by(email = email).first()
-        # need to add more validations here ????? check logic again
+        # need to add more validations here -- change to use form validation
         if user:
             if check_password_hash(user.password, password):
                login_user(user, remember = True)
@@ -28,7 +28,7 @@ def login():
         else:
             flash('There is no account linked with this email address. Please create an account', category = 'error')
 
-    return render_template('auth/login.html', user=current_user)
+    return render_template('auth/auth-base.html', user=current_user)
 
 @auth.route('/logout')
 @login_required

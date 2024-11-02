@@ -16,6 +16,12 @@ prefill out the @db.com part
 
 https://getbootstrap.com/docs/5.0/forms/validation/? for better validation
 
+Need to create an environment.txt file
+
+Forgot password functionality, if i have time
+
+one base authentication page then add the blocks for login and register 
+
 fix the required asterisk
 
 https://www.w3schools.com/tags/att_form_action.asp
@@ -37,7 +43,7 @@ https://medium.com/@shubhkarmanrathore/mastering-crud-operations-with-sqlalchemy
 
 Should select statements be wrapped in try catch block? 
 
-add another key to dictonary when adding property for last updated and last updated by 
+add another key to dictionary when adding property for last updated and last updated by 
 
 check naming conventions in html, js and python.
 
@@ -45,3 +51,14 @@ Review logs to see if i should include first name or email address
 
 export table as excel: use link to add something custom to the toolbar - https://datatables.net/examples/layout/custom-nodes.html 
 
+add more space between login and register icons
+
+make labeling for forms consistent throughout the application
+
+Logo at the top of the login page with some description
+
+make the login and register button take up the whole width 
+
+combine the name column in the grid
+
+more restrictions on email. should this be formulated???
