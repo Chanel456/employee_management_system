@@ -3,69 +3,67 @@ from datetime import datetime
 
 from flask import render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_required, current_user
-from sqlalchemy.exc import DataError, IntegrityError, OperationalError, SQLAlchemyError
+from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
 from app.employee import employee
-from app.enums.location_options import LocationOptions
+from app.employee.forms import EmployeeForm
 from app.models.employee import Employee
 
 @login_required
 @employee.route('/create', methods=['GET', 'POST'])
 def create_employee():
-    location_options = list(LocationOptions)
+    #write function for date joined and fetch employee by email in utils file
+    form = EmployeeForm()
     if request.method == 'POST':
-        email = request.form.get('email')
-        first_name = request.form.get('firstName')
-        last_name = request.form.get('lastName')
-        team_name = request.form.get('teamName')
-        role = request.form.get('role')
-        location = request.form.get('location')
-        # write function to format date_joined
-        date_joined = datetime.strptime(request.form.get('dateJoined'), '%Y-%m-%d')
-        retrieved_employee = Employee.query.filter_by(email=email).first()
+        retrieved_employee = Employee.query.filter_by(email=form.email.data).first()
 
         if retrieved_employee:
             flash('An employee with this email address already exists within the system', category='error')
-        else:
-            # add some validation about the inputs
+        elif form.validate_on_submit():
+            date_joined= datetime.strptime(str(form.date_joined.data), '%Y-%m-%d')
             try:
-                new_employee = Employee(email=email, first_name=first_name, last_name=last_name, team_name=team_name,
-                                        role=role, location=location, date_joined=date_joined)
+                new_employee = Employee(email=form.email.data, first_name=form.first_name.data, last_name=form.last_name.data, team_name=form.team_name.data,
+                                        role=form.role.data, location=form.location.data, date_joined=date_joined)
                 db.session.add(new_employee)
                 db.session.commit()
             except SQLAlchemyError as err:
                 db.session.rollback()
-                logging.error('Unable to create employee: %s, {err}', first_name)
+                logging.error('Unable to create employee: %s, {err}', form.first_name.data)
                 flash('Unable to update employee', category='error')
             else:
-                logging.info('Employee %s created successfully', new_employee.first_name)
+                logging.info('Employee %s created successfully', form.first_name.data)
                 flash('Employee added successfully', category='success')
 
-    return render_template('employees/add-employee.html', user=current_user, location_options=location_options)
+    return render_template('employees/add-employee.html', user=current_user, form=form)
 
 @login_required
 @employee.route('/update', methods=['POST', 'GET'])
 def update():
+    form = EmployeeForm()
     if request.method == 'POST':
         employee_id = request.args.get('employee_id')
         updated_employee = request.form.to_dict()
         retrieved_employee = Employee.query.get(employee_id)
         # write function to format date joined
         converted_date = datetime.strptime(request.form.get('date_joined'), '%Y-%m-%d')
-        updated_employee['date_joined'] = converted_date
+        # updated_employee['date_joined'] = converted_date
+        logging.info('Logging request form')
+        logging.info('Logging form using employee class')
+        logging.info(form.data)
 
         if retrieved_employee:
             # add some validation about the inputs
             try:
-                db.session.query(Employee).filter_by(employee_id=employee_id).update(updated_employee)
-                db.session.commit()
+                pass
+                # db.session.query(Employee).filter_by(employee_id=employee_id).update(updated_employee)
+                # db.session.commit()
             except SQLAlchemyError as err:
                 db.session.rollback()
                 logging.error('Unable to update employee: %s, {err}', retrieved_employee['email'])
                 flash('Unable to update employee', category='error')
             else:
-                logging.info('Employee: %s successfully updated', updated_employee['first_name'])
+                # logging.info('Employee: %s successfully updated', updated_employee['first_name'])
                 flash('Employee successfully updated')
         else:
             flash('Employee cannot be updated as they do not exist', category='error')

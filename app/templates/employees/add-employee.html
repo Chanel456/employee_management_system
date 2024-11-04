@@ -1,57 +1,83 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+{% from "_formhelpers.html" import render_field %}
+
 <form method="POST">
-    <div class="center">
-       <h3>Add Employee</h3>
-    <div class="row">
-       <div class="col">
-        <label class="form-control-label" for="firstName">First Name</label>
-        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" required>
-    </div>
-    <div class="col">
-        <label class="form-control-label" for="lastName">Last Name</label>
-        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name" required>
-    </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label class="form-control-label" for="email">Email Address</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
-        </div>
-        <div class="col">
-            <label class="form-control-label" for="dateJoined">Date Joined</label>
-            <input type="date" class="form-control" id="dateJoined" name="dateJoined" required>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-           <label class="form-control-label" for="teamName">Team Name</label>
-            <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Enter team name" required>
-        </div>
-        <div class="col">
-            <label class="form-control-label" for="role">Role</label>
-            <input type="text" class="form-control" id="role" name="role" placeholder="Enter role" required>
-        </div>
+<!--    <div class="center">-->
+<!--       <h3>Add Employee</h3>-->
+<!--    <div class="row">-->
+<!--       <div class="col">-->
+<!--        <label class="form-control-label" for="firstName">First Name</label>-->
+<!--        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Enter first name" required>-->
+<!--    </div>-->
+<!--    <div class="col">-->
+<!--        <label class="form-control-label" for="lastName">Last Name</label>-->
+<!--        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Enter last name" required>-->
+<!--    </div>-->
+<!--    </div>-->
+<!--    <div class="row">-->
+<!--        <div class="col">-->
+<!--            <label class="form-control-label" for="email">Email Address</label>-->
+<!--            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <label class="form-control-label" for="dateJoined">Date Joined</label>-->
+<!--            <input type="date" class="form-control" id="dateJoined" name="dateJoined" required>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="row">-->
+<!--        <div class="col">-->
+<!--           <label class="form-control-label" for="teamName">Team Name</label>-->
+<!--            <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Enter team name" required>-->
+<!--        </div>-->
+<!--        <div class="col">-->
+<!--            <label class="form-control-label" for="role">Role</label>-->
+<!--            <input type="text" class="form-control" id="role" name="role" placeholder="Enter role" required>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="row">-->
+<!--        <div class="col">-->
+<!--            <label class="form-control-label" for="location">Location</label>-->
+<!--             <select class="form-select" name="location" id="location" required>-->
+<!--                 {%  for location in location_options %}-->
+<!--                 {% if  location.value == 'Please Select' %}-->
+<!--                 <option value ="{{ location.value }}" disabled selected hidden>{{ location.value }}</option>-->
+<!--                 {% else %}-->
+<!--                 <option value ="{{ location.value }}">{{ location.value }}</option>-->
+<!--                 {% endif %}-->
+<!--                 {% endfor %}-->
+<!--            </select>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <button type="submit" class="btn btn-primary">Submit</button>-->
+<!--    </div>-->
+
+    {{ form.csrf_token() }}
+    <dl>
+        {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name') }}
+        {{ render_field(form.last_name, class='form-control', placeholder='Last name') }}
+        {{ render_field(form.email, class='form-control', placeholder='Email address') }}
+        {{ render_field(form.date_joined, class='form-control') }}
+        {{ render_field(form.team_name, class='form-control', placeholder='Team name') }}
+        {{ render_field(form.role, class='form-control', placeholder='Role') }}
+        <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
+            {% for option in form.location %}
+            {% if option.data == 'Please Select' %}
+            <option value ="{{ option.data }}" disabled selected hidden>{{ option.data }}</option>
+            {% elif option.data != 'Please Select'%}
+            <option value ="{{ option.data }}">{{ option.data }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </dl>
+    <div class="d-grid gap-2 text-center">
+        <button class="btn btn-primary" type="submit">Add Employee</button>
     </div>
 
-    <div class="row">
-        <div class="col">
-            <label class="form-control-label" for="location">Location</label>
-             <select class="form-select" name="location" id="location" required>
-                 {%  for location in location_options %}
-                 {% if  location.value == 'Please Select' %}
-                 <option value ="{{ location.value }}" disabled selected hidden>{{ location.value }}</option>
-                 {% else %}
-                 <option value ="{{ location.value }}">{{ location.value }}</option>
-                 {% endif %}
-                 {% endfor %}
-            </select>
-        </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Submit</button>
-    </div>
 
 </form>
 
