@@ -43,27 +43,24 @@ def update():
     form = EmployeeForm()
     if request.method == 'POST':
         employee_id = request.args.get('employee_id')
-        updated_employee = request.form.to_dict()
+        updated_employee = form.data
+        updated_employee.pop('csrf_token',None)
+        #write function for date time
+        converted_date = datetime.strptime(str(form.date_joined.data), '%Y-%m-%d')
+        updated_employee['date_joined'] = converted_date
+        # write function to get employee by id
         retrieved_employee = Employee.query.get(employee_id)
-        # write function to format date joined
-        converted_date = datetime.strptime(request.form.get('date_joined'), '%Y-%m-%d')
-        # updated_employee['date_joined'] = converted_date
-        logging.info('Logging request form')
-        logging.info('Logging form using employee class')
-        logging.info(form.data)
 
         if retrieved_employee:
-            # add some validation about the inputs
             try:
-                pass
-                # db.session.query(Employee).filter_by(employee_id=employee_id).update(updated_employee)
-                # db.session.commit()
+                db.session.query(Employee).filter_by(employee_id=employee_id).update(updated_employee)
+                db.session.commit()
             except SQLAlchemyError as err:
                 db.session.rollback()
                 logging.error('Unable to update employee: %s, {err}', retrieved_employee['email'])
                 flash('Unable to update employee', category='error')
             else:
-                # logging.info('Employee: %s successfully updated', updated_employee['first_name'])
+                logging.info('Employee: %s successfully updated', updated_employee['first_name'])
                 flash('Employee successfully updated')
         else:
             flash('Employee cannot be updated as they do not exist', category='error')
@@ -73,7 +70,7 @@ def update():
 
 # need to add check for admin
 @login_required
-@employee.route('/delete', methods=['GET'])
+@employee.route('/delete', methods=['GET', 'POST'])
 def delete():
     #Look to see how i can send a proper delete request
     # Fall back for method not allow

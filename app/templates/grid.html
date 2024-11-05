@@ -31,7 +31,7 @@
             <td>
                 <a href="/update/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{item.employee_id}}"><i class="bi bi-pencil fs-4 mx-1"></i></a>
                 {% if user.is_admin %}
-                <a href="{{ url_for('employee.delete', employee_id = item.employee_id) }}" onclick="return confirm('Are you sure you want to delete ?')"><i class="bi bi-trash fs-4 text-danger mx-1"></i></a>
+                <a href="/delete/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modeldeleteemployee{{item.employee_id}}"><i class="bi bi-trash fs-4 text-danger mx-1"></i></a>
                 {% endif %}
             </td>
         </tr>
@@ -47,7 +47,7 @@
                       <dl>
                           {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name', value=item.first_name) }}
                           {{ render_field(form.last_name, class='form-control', placeholder='Last name', value=item.last_name) }}
-                          {{ render_field(form.email, class='form-control', placeholder='Email address', value=item.email) }}
+                          {{ render_field(form.email, class='form-control', placeholder='Email address', value=item.email, disabled=true) }}
                           {{ render_field(form.date_joined, class='form-control', value=item.date_joined.date())}}
                           {{ render_field(form.team_name, class='form-control', placeholder='Team name', value=item.team_name) }}
                           {{ render_field(form.role, class='form-control', placeholder='Role', value=item.role)}}
@@ -66,56 +66,6 @@
                       <div class="d-grid gap-2 text-center">
                           <button class="btn btn-primary" type="submit">Update Employee</button>
                       </div>
-
-
-<!--                    <div class="row">-->
-<!--                        <div class="col">-->
-<!--                            <label class="form-control-label" for="first_name">First Name</label>-->
-<!--                            <input type="text" class="form-control" id="first_name" name="first_name" value="{{item.first_name}}">-->
-<!--                        </div>-->
-<!--                        <div class="col">-->
-<!--                            <label class="form-control-label" for="last_name">Last Name</label>-->
-<!--                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{item.last_name}}">-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                      <div class="row">-->
-<!--                          <div class="col">-->
-<!--                              <label class="form-control-label" for="email">Email Address</label>-->
-<!--                              <input type="email" class="form-control" id="email" name="email" value="{{item.email}}" disabled>-->
-<!--                          </div>-->
-<!--                          <div class="col">-->
-<!--                              <label class="form-control-label" for="date_joined">Date Joined</label>-->
-<!--                              <input type="date" class="form-control" id="date_joined" name="date_joined" value="{{item.date_joined.date()}}">-->
-<!--                          </div>-->
-<!--                      </div>-->
-<!--                      <div class="row">-->
-<!--                          <div class="col">-->
-<!--                              <label class="form-control-label" for="team_name">Team Name</label>-->
-<!--                              <input type="text" class="form-control" id="team_name" name="team_name" value="{{item.team_name}}">-->
-<!--                          </div>-->
-<!--                          <div class="col">-->
-<!--                              <label class="form-control-label" for="role">Role</label>-->
-<!--                              <input type="text" class="form-control" id="role" name="role" value="{{item.role}}">-->
-<!--                          </div>-->
-<!--                      </div>-->
-<!--                      <div class="row">-->
-<!--                          <div class="col">-->
-<!--                              <label class="form-control-label" for="location">Location</label>-->
-<!--                              <select class="form-select" name="location" id="location">-->
-<!--                                  {%  for location in location_options %}-->
-<!--                                  {% if  location.value == item.location %}-->
-<!--                                  <option value ="{{ location.value }}" selected>{{ location.value }}</option>-->
-<!--                                  {% elif location.value != 'Please Select' %}-->
-<!--                                  <option value ="{{ location.value }}">{{ location.value }}</option>-->
-<!--                                  {% endif %}-->
-<!--                                  {% endfor %}-->
-<!--                              </select>-->
-<!--                          </div>-->
-<!--                      </div>-->
-
-<!--                    <div class="form-group">-->
-<!--                      <button class="btn btn-primary" type="submit">Update Employee</button>-->
-<!--                    </div>-->
                   </form>
 
                 </div>
@@ -126,6 +76,26 @@
               </div>
             </div>
           </div>
+        <div class="modal fade" id="modeldeleteemployee{{item.employee_id}}" tabindex="-1" aria-labelledby="modelDeleteEmployeeLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-x-circle text-danger" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708"/>
+                            </svg>
+                            <h3>Are you sure?</h3>
+                            <p>Are you sure you want to delete {{item.first_name}} as an employee. This process cannot be undone</p>
+                            <div>
+                                <a href="{{url_for('views.table')}}" class="button btn btn-secondary">Cancel</a>
+                                <a href="{{url_for('employee.delete', employee_id = item.employee_id)}}" class="button btn btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
         </tbody>
     </table>
