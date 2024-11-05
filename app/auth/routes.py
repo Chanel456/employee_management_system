@@ -2,7 +2,7 @@ import logging
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_user, login_required, logout_user, current_user
 from sqlalchemy.exc import SQLAlchemyError
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 from app import db
 from app.auth.forms import RegistrationForm, LoginForm
@@ -19,7 +19,7 @@ def login():
                    login_user(user, remember = True)
                    logging.info('%s logged in successfully', user.first_name)
                    flash('Logged in successfully.', category='success')
-                   return redirect(url_for('views.home'))
+                   return redirect(url_for('views.dashboard'))
         else:
             flash('There is no account linked with this email address. Please create an account', category='error')
 

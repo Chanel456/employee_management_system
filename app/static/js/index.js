@@ -8,7 +8,7 @@ DataTable.defaults.layout = {
 new DataTable('#employeeTable', {
     columnDefs: [
         {
-            targets: 6,
+            targets: 5,
             render: DataTable.render.datetime('Do MMM YYYY')
         }
     ],

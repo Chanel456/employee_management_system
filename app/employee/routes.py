@@ -16,7 +16,7 @@ def create_employee():
     #write function for date joined and fetch employee by email in utils file
     form = EmployeeForm()
     if request.method == 'POST':
-        retrieved_employee = Employee.query.filter_by(email=form.email.data).first()
+        retrieved_employee = find_employee_by_email(form.email.data)
 
         if retrieved_employee:
             flash('An employee with this email address already exists within the system', category='error')
@@ -43,13 +43,12 @@ def update():
     form = EmployeeForm()
     if request.method == 'POST':
         employee_id = request.args.get('employee_id')
+        retrieved_employee = find_employee_by_id(employee_id)
         updated_employee = form.data
-        updated_employee.pop('csrf_token',None)
+        updated_employee.pop('csrf_token', None)
         #write function for date time
         converted_date = datetime.strptime(str(form.date_joined.data), '%Y-%m-%d')
         updated_employee['date_joined'] = converted_date
-        # write function to get employee by id
-        retrieved_employee = Employee.query.get(employee_id)
 
         if retrieved_employee:
             try:
@@ -64,7 +63,7 @@ def update():
                 flash('Employee successfully updated')
         else:
             flash('Employee cannot be updated as they do not exist', category='error')
-        return redirect(url_for('views.table'))
+        return redirect(url_for('views.dashboard'))
 
 
 
@@ -76,7 +75,7 @@ def delete():
     # Fall back for method not allow
     if request.method == 'GET' and current_user.is_admin:
         employee_id = request.args.get('employee_id')
-        retrieved_employee = Employee.query.get(employee_id)
+        retrieved_employee = find_employee_by_id(employee_id)
         if retrieved_employee:
             try:
                 db.session.delete(retrieved_employee)
@@ -89,22 +88,29 @@ def delete():
                 logging.info('Employee: %s deleted successfully', retrieved_employee.first_name)
                 flash('Employee deleted successfully', category='success')
         else:
-            flash('Employee cannot be deleted as the do not exist', category='error')
+            flash('Employee cannot be deleted as they do not exist', category='error')
 
-    return redirect(url_for('views.table'))
+    return redirect(url_for('views.dashboard'))
+
+def find_employee_by_email(email):
+    try:
+        retrieved_employee = Employee.query.filter_by(email=email).first()
+        return retrieved_employee
+    except SQLAlchemyError as err:
+        db.session.rollback()
+        logging.error('Error occurred whilst querying the database {err}')
+
+def find_employee_by_id(employee_id):
+    try:
+        retrieved_employee = Employee.query.get(employee_id)
+        return retrieved_employee
+    except SQLAlchemyError as err:
+        db.session.rollback()
+        logging.error('Error occurred whilst querying the database {err}')
 
 
 # see if i need these endpoints, i might remove.
-#if endpoints are kept add try catch block
 @login_required
 @employee.route('/fetch_all', methods=['GET'])
 def fetch_all_employees():
     return jsonify(db.session.query(Employee).all())
-
-@login_required
-@employee.route('/fetch_employee', methods=['GET'])
-def fetch_employee():
-    employee_id = request.args.get('employee_id')
-    if employee_id:
-        return jsonify(Employee.query.get(employee_id))
-    # need to add code for else. Incorrect query parameter received

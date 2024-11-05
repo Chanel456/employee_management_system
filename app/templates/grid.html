@@ -5,11 +5,14 @@
 {% from "_formhelpers.html" import render_field %}
 
 <div class="container">
-    <table class="table table-hover table-striped table-light" id="employeeTable">
+    <div class="jumbotron">
+
+        <h2>Manage Employees <button type="button" class="btn btn-success float-right" data-bs-toggle="modal" data-bs-target="#modaladdemployee">Add New Employee</button></h2>
+
+        <table class="table table-hover table-striped table-light" id="employeeTable">
         <thead>
         <tr>
-            <th>First Name</th>
-            <th>Last Name</th>
+            <th>Name</th>
             <th>Email</th>
             <th>Team Name</th>
             <th>Role</th>
@@ -21,8 +24,7 @@
         <tbody>
         {% for item in list %}
         <tr>
-            <td>{{item.first_name}}</td>
-            <td>{{item.last_name}}</td>
+            <td>{{item.first_name}} {{item.last_name}}</td>
             <td>{{item.email}}</td>
             <td>{{item.team_name}}</td>
             <td>{{item.role}}</td>
@@ -35,11 +37,11 @@
                 {% endif %}
             </td>
         </tr>
-        <div class="modal fade" id="modaledit{{item.employee_id}}" tabindex="-1" aria-labelledby="modelEditLabel" aria-hidden="true">
+        <div class="modal fade" id="modaledit{{item.employee_id}}" tabindex="-1" aria-labelledby="modelUpdateEmployeeLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h4 class="modal-title">Update Information</h4>
+                  <h4 class="modal-title">Update Employee</h4>
                 </div>
                 <div class="modal-body">
                   <form action="{{ url_for('employee.update', employee_id = item.employee_id) }}" method="POST">
@@ -88,7 +90,7 @@
                             <h3>Are you sure?</h3>
                             <p>Are you sure you want to delete {{item.first_name}} as an employee. This process cannot be undone</p>
                             <div>
-                                <a href="{{url_for('views.table')}}" class="button btn btn-secondary">Cancel</a>
+                                <a href="{{url_for('views.dashboard')}}" class="button btn btn-secondary">Cancel</a>
                                 <a href="{{url_for('employee.delete', employee_id = item.employee_id)}}" class="button btn btn-danger">Delete</a>
                             </div>
                         </div>
@@ -99,5 +101,46 @@
         {% endfor %}
         </tbody>
     </table>
+
+    </div>
+
+    <div class="modal fade" id="modaladdemployee" tabindex="-1" aria-labelledby="modelAddEmployeeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Add Employee</h4>
+                </div>
+                <div class="modal-body">
+                  <form action="{{ url_for('employee.create_employee') }}" method="POST">
+                      {{ form.csrf_token() }}
+                      <dl>
+                          {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name') }}
+                          {{ render_field(form.last_name, class='form-control', placeholder='Last name') }}
+                          {{ render_field(form.email, class='form-control', placeholder='Email address') }}
+                          {{ render_field(form.date_joined, class='form-control')}}
+                          {{ render_field(form.team_name, class='form-control', placeholder='Team name') }}
+                          {{ render_field(form.role, class='form-control', placeholder='Role')}}
+                          <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
+                              {% for option in form.location %}
+                              {% if option.data == 'Please Select' %}
+                              <option value ="{{ option.data }}" disabled selected hidden>{{ option.data }}</option>
+                              {% else %}
+                              <option value ="{{ option.data }}">{{ option.data }}</option>
+                              {% endif %}
+                              {% endfor %}
+                          </select>
+                      </dl>
+                      <div class="d-grid gap-2 text-center">
+                          <button class="btn btn-primary" type="submit">Add Employee</button>
+                      </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
