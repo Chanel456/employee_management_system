@@ -4,80 +4,81 @@
 
 {% from "_formhelpers.html" import render_field %}
 
-<div class="container">
-    <div class="jumbotron">
-
-        <h2>Manage Employees <button type="button" class="btn btn-success float-right" data-bs-toggle="modal" data-bs-target="#modaladdemployee">Add New Employee</button></h2>
+<div class="container mt-2">
+    <div class="bg-light rounded">
+        <div class="row">
+            <h2>Manage Employees<button type="button" class="btn btn-success float-lg-end" data-bs-toggle="modal" data-bs-target="#modaladdemployee">Add New Employee</button></h2>
+        </div>
 
         <table class="table table-hover table-striped table-light" id="employeeTable">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Team Name</th>
-            <th>Role</th>
-            <th>Location</th>
-            <th>Date Joined</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in list %}
-        <tr>
-            <td>{{item.first_name}} {{item.last_name}}</td>
-            <td>{{item.email}}</td>
-            <td>{{item.team_name}}</td>
-            <td>{{item.role}}</td>
-            <td>{{item.location}}</td>
-            <td>{{item.date_joined.date()}}</td>
-            <td>
-                <a href="/update/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{item.employee_id}}"><i class="bi bi-pencil fs-4 mx-1"></i></a>
-                {% if user.is_admin %}
-                <a href="/delete/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modeldeleteemployee{{item.employee_id}}"><i class="bi bi-trash fs-4 text-danger mx-1"></i></a>
-                {% endif %}
-            </td>
-        </tr>
-        <div class="modal fade" id="modaledit{{item.employee_id}}" tabindex="-1" aria-labelledby="modelUpdateEmployeeLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title">Update Employee</h4>
+            <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Team Name</th>
+                <th>Role</th>
+                <th>Location</th>
+                <th>Date Joined</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for item in list %}
+            <tr>
+                <td>{{item.first_name}} {{item.last_name}}</td>
+                <td>{{item.email}}</td>
+                <td>{{item.team_name}}</td>
+                <td>{{item.role}}</td>
+                <td>{{item.location}}</td>
+                <td>{{item.date_joined.date()}}</td>
+                <td>
+                    <a href="/update/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modaledit{{item.employee_id}}"><i class="bi bi-pencil fs-4 mx-1"></i></a>
+                    {% if user.is_admin %}
+                    <a href="/delete/{{item.employee_id}}" data-bs-toggle="modal" data-bs-target="#modeldeleteemployee{{item.employee_id}}"><i class="bi bi-trash fs-4 text-danger mx-1"></i></a>
+                    {% endif %}
+                </td>
+            </tr>
+            <div class="modal fade" id="modaledit{{item.employee_id}}" tabindex="-1" aria-labelledby="modelUpdateEmployeeLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Update Employee</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ url_for('employee.update', employee_id = item.employee_id) }}" method="POST">
+                                {{ form.csrf_token() }}
+                                <dl>
+                                    {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name', value=item.first_name) }}
+                                    {{ render_field(form.last_name, class='form-control', placeholder='Last name', value=item.last_name) }}
+                                    {{ render_field(form.email, class='form-control', placeholder='Email address', value=item.email, disabled=true) }}
+                                    {{ render_field(form.date_joined, class='form-control', value=item.date_joined.date())}}
+                                    {{ render_field(form.team_name, class='form-control', placeholder='Team name', value=item.team_name) }}
+                                    {{ render_field(form.role, class='form-control', placeholder='Role', value=item.role)}}
+
+                                    <div class="form-floating">
+                                        <select id="{{ form.location.id }}" name ="{{ form.location.name }}" class="form-select">
+                                            {% for option in form.location %}
+                                            {% if option.data == item.location %}
+                                            <option value ="{{ option.data }}" selected>{{ option.data }}</option>
+                                            {% elif option.data != 'Please Select'%}
+                                            <option value ="{{ option.data }}">{{ option.data }}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <label for="{{ form.location.id }}">{{ form.location.label }}</label>
+                                    </div>
+                                </dl>
+                                <div class="d-grid gap-2 text-center">
+                                    <button class="btn btn-primary" type="submit">Update Employee</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                  <form action="{{ url_for('employee.update', employee_id = item.employee_id) }}" method="POST">
-                      {{ form.csrf_token() }}
-                      <dl>
-                          {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name', value=item.first_name) }}
-                          {{ render_field(form.last_name, class='form-control', placeholder='Last name', value=item.last_name) }}
-                          {{ render_field(form.email, class='form-control', placeholder='Email address', value=item.email, disabled=true) }}
-                          {{ render_field(form.date_joined, class='form-control', value=item.date_joined.date())}}
-                          {{ render_field(form.team_name, class='form-control', placeholder='Team name', value=item.team_name) }}
-                          {{ render_field(form.role, class='form-control', placeholder='Role', value=item.role)}}
-
-                          <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
-                          {% for option in form.location %}
-                          {% if option.data == item.location %}
-                          <option value ="{{ option.data }}" selected>{{ option.data }}</option>
-                          {% elif option.data != 'Please Select'%}
-                          <option value ="{{ option.data }}">{{ option.data }}</option>
-                          {% endif %}
-                          {% endfor %}
-                          </select>
-
-                      </dl>
-                      <div class="d-grid gap-2 text-center">
-                          <button class="btn btn-primary" type="submit">Update Employee</button>
-                      </div>
-                  </form>
-
-                </div>
-
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-              </div>
             </div>
-          </div>
         <div class="modal fade" id="modeldeleteemployee{{item.employee_id}}" tabindex="-1" aria-labelledby="modelDeleteEmployeeLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -120,7 +121,8 @@
                           {{ render_field(form.date_joined, class='form-control')}}
                           {{ render_field(form.team_name, class='form-control', placeholder='Team name') }}
                           {{ render_field(form.role, class='form-control', placeholder='Role')}}
-                          <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
+                          <div class="form-floating">
+                              <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
                               {% for option in form.location %}
                               {% if option.data == 'Please Select' %}
                               <option value ="{{ option.data }}" disabled selected hidden>{{ option.data }}</option>
@@ -129,6 +131,8 @@
                               {% endif %}
                               {% endfor %}
                           </select>
+                              <label for="{{ form.location.id }}">{{ form.location.label }}</label>
+                          </div>
                       </dl>
                       <div class="d-grid gap-2 text-center">
                           <button class="btn btn-primary" type="submit">Add Employee</button>

@@ -1,10 +1,9 @@
 {% macro render_field(field) %}
-{% if field.type == 'RadioField' %}
-<dt>{{ field.label }}
-{% endif %}
-<!--  <dt>{{ field.label }}-->
-  <dd>{{ field(**kwargs)|safe }}
-  {% if field.errors %}
+  <dd>
+    <div class="form-floating mb-3">
+      {{ field(**kwargs)|safe }}
+      {{ field.label }}
+      {% if field.errors %}
     <ul class="list-unstyled">
     {% for error in field.errors %}
       <li class="text-danger">
@@ -14,5 +13,7 @@
     {% endfor %}
     </ul>
   {% endif %}
-  </dd>
+    </div>
+
+</dd>
 {% endmacro %}
