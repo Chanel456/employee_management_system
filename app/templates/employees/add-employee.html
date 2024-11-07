@@ -4,7 +4,9 @@
 
 {% from "_formhelpers.html" import render_field %}
 
-<form method="POST">
+<div class="container mt-2">
+    <h4>Add Employee</h4>
+    <form method="POST">
     {{ form.csrf_token() }}
     <dl>
         {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name') }}
@@ -13,19 +15,23 @@
         {{ render_field(form.date_joined, class='form-control') }}
         {{ render_field(form.team_name, class='form-control', placeholder='Team name') }}
         {{ render_field(form.role, class='form-control', placeholder='Role') }}
-        <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
-            {% for option in form.location %}
-            {% if option.data == 'Please Select' %}
-            <option value ="{{ option.data }}" disabled selected hidden>{{ option.data }}</option>
-            {% else %}
-            <option value ="{{ option.data }}">{{ option.data }}</option>
-            {% endif %}
-            {% endfor %}
-        </select>
+        <div class="form-floating">
+            <select id="{{ form.location.id }}" name = "{{ form.location.name }}" class="form-select">
+                {% for option in form.location %}
+                {% if option.data == 'Please Select' %}
+                <option value ="{{ option.data }}" disabled selected hidden>{{ option.data }}</option>
+                {% else %}
+                <option value ="{{ option.data }}">{{ option.data }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <label for="{{ form.location.id }}">{{ form.location.label }}</label>
+        </div>
     </dl>
     <div class="d-grid gap-2 text-center">
         <button class="btn btn-primary" type="submit">Add Employee</button>
     </div>
 </form>
+</div>
 
 {% endblock %}

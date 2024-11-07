@@ -12,8 +12,7 @@ from app.models.employee import Employee
 
 @login_required
 @employee.route('/create', methods=['GET', 'POST'])
-def create_employee():
-    #write function for date joined and fetch employee by email in utils file
+def create():
     form = EmployeeForm()
     if request.method == 'POST':
         retrieved_employee = find_employee_by_email(form.email.data)
@@ -41,9 +40,9 @@ def create_employee():
 @employee.route('/update', methods=['POST', 'GET'])
 def update():
     form = EmployeeForm()
+    employee_id = request.args.get('employee_id')
+    retrieved_employee = find_employee_by_id(employee_id)
     if request.method == 'POST':
-        employee_id = request.args.get('employee_id')
-        retrieved_employee = find_employee_by_id(employee_id)
         updated_employee = form.data
         updated_employee.pop('csrf_token', None)
         #write function for date time
@@ -61,9 +60,10 @@ def update():
             else:
                 logging.info('Employee: %s successfully updated', updated_employee['first_name'])
                 flash('Employee successfully updated')
+                redirect(url_for('views.dashboard'))
         else:
-            flash('Employee cannot be updated as they do not exist', category='error')
-        return redirect(url_for('views.dashboard'))
+            flash('Employee cannot be updated as they do not exist', category='error',)
+    return render_template('employees/update-employee.html', user = current_user, employee = retrieved_employee, form = form)
 
 
 
