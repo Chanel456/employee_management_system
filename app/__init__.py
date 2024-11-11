@@ -6,7 +6,7 @@ from os import path
 
 from werkzeug.utils import redirect
 
-from config import Config
+from config.config import Config
 
 app = Flask(__name__)
 db = SQLAlchemy()

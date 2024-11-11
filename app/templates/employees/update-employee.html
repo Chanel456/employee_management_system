@@ -11,8 +11,8 @@
       <dl>
         {{ render_field(form.first_name, class='form-control mt-4', placeholder='First name', value=employee.first_name) }}
         {{ render_field(form.last_name, class='form-control', placeholder='Last name', value=employee.last_name) }}
-        {{ render_field(form.email, class='form-control', placeholder='Email address', value=employee.email, disabled=true) }}
-        {{ render_field(form.date_joined, class='form-control', value=employee.date_joined.date())}}
+        {{ render_field(form.email, class='form-control', placeholder='Email address', value=employee.email, readonly=true) }}
+        {{ render_field(form.date_joined, class='form-control', value=employee.date_joined)}}
         {{ render_field(form.team_name, class='form-control', placeholder='Team name', value=employee.team_name) }}
         {{ render_field(form.role, class='form-control', placeholder='Role', value=employee.role)}}
 

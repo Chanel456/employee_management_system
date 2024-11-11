@@ -32,7 +32,7 @@
                 <td>{{item.team_name}}</td>
                 <td>{{item.role}}</td>
                 <td>{{item.location}}</td>
-                <td>{{item.date_joined.date()}}</td>
+                <td>{{item.date_joined}}</td>
                 <td>
                     <a href="{{url_for('employee.update', employee_id = item.employee_id)}}"><i class="bi bi-pencil fs-4 mx-1"></i></a>
                     {% if user.is_admin %}

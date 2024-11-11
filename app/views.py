@@ -1,6 +1,5 @@
-from flask import render_template, Blueprint, url_for
+from flask import render_template, Blueprint
 from flask_login import login_required, current_user
-from werkzeug.utils import redirect
 
 from app import db
 from app.employee.forms import EmployeeForm
